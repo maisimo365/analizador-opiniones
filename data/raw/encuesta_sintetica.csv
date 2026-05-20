@@ -1,0 +1,81 @@
+id,docente,materia,semestre,dimension,calificacion_likert,comentario
+1,Dr. García,Programación I,I/2026,Metodología,5,El docente explica los temas con mucha claridad y usa ejemplos prácticos que facilitan la comprensión
+2,Lic. Mendoza,Cálculo,I/2026,Metodología,5,Sus clases son muy bien estructuradas y el ritmo de enseñanza es adecuado para todos
+3,Ing. Flores,Física General,I/2026,Metodología,4,Explica de forma clara usando el pizarrón con ejemplos paso a paso muy útiles
+4,Dra. Vargas,Estadística,I/2026,Metodología,4,La metodología de enseñanza es buena aunque a veces avanza demasiado rápido
+5,Prof. Quispe,Algoritmos,I/2026,Metodología,5,Sus clases son dinámicas y participativas lo cual motiva mucho al estudiante
+6,Dr. García,Algoritmos,I/2026,Metodología,2,No explica bien los temas y avanza muy rápido sin verificar que entendamos
+7,Lic. Mendoza,Estadística,I/2026,Metodología,1,Las clases son monótonas y confusas no logro entender los temas explicados
+8,Ing. Flores,Cálculo,I/2026,Metodología,2,Los ejemplos que usa no ayudan a comprender los conceptos difíciles
+9,Dra. Vargas,Programación I,I/2026,Metodología,1,La manera de enseñar es muy desordenada y dificulta bastante el aprendizaje
+10,Prof. Quispe,Física General,I/2026,Metodología,3,La enseñanza es regular a veces explica bien y otras veces no se entiende
+11,Dr. García,Estadística,I/2026,Metodología,5,Tiene una metodología excelente explica con ejemplos del mundo real muy claros
+12,Lic. Mendoza,Física General,I/2026,Metodología,4,Las explicaciones son claras y los ejercicios de práctica ayudan mucho
+13,Ing. Flores,Algoritmos,I/2026,Metodología,3,La metodología es básica pero cumple con los objetivos del curso
+14,Dra. Vargas,Cálculo,I/2026,Metodología,2,Necesita mejorar la forma de explicar los conceptos de la materia
+15,Prof. Quispe,Programación I,I/2026,Metodología,5,Excelente docente que sabe cómo llegar a los estudiantes con sus explicaciones claras
+16,Dr. García,Cálculo,I/2026,Metodología,4,Las clases están bien preparadas con buenas diapositivas y ejercicios prácticos
+17,Dr. García,Programación I,I/2026,Evaluación,5,Los exámenes son justos y acordes al material enseñado durante todas las clases
+18,Lic. Mendoza,Cálculo,I/2026,Evaluación,5,Los criterios de calificación son claros desde el inicio y los parciales bien diseñados
+19,Ing. Flores,Física General,I/2026,Evaluación,4,Las notas reflejan el esfuerzo del estudiante y los exámenes son equilibrados
+20,Dra. Vargas,Estadística,I/2026,Evaluación,4,El sistema de evaluación es transparente y bastante equitativo para todos
+21,Prof. Quispe,Algoritmos,I/2026,Evaluación,5,Explica cómo se califica cada parte del examen y devuelve resultados muy rápido
+22,Dr. García,Algoritmos,I/2026,Evaluación,1,Los parciales son muy difíciles comparado a lo que se enseña en clase
+23,Lic. Mendoza,Estadística,I/2026,Evaluación,2,El examen incluye temas que nunca se explicaron y las notas son muy injustas
+24,Ing. Flores,Cálculo,I/2026,Evaluación,2,No explica los criterios de calificación y las notas resultan muy bajas
+25,Dra. Vargas,Programación I,I/2026,Evaluación,1,El sistema de evaluación es muy estricto y no reconoce el esfuerzo del alumno
+26,Prof. Quispe,Física General,I/2026,Evaluación,3,Los exámenes son aceptables pero algunos temas no se vieron bien en clase
+27,Dr. García,Estadística,I/2026,Evaluación,5,Los trabajos y exámenes están bien balanceados y evalúan lo más esencial
+28,Lic. Mendoza,Física General,I/2026,Evaluación,4,Los parciales evalúan correctamente el conocimiento adquirido en clase
+29,Ing. Flores,Algoritmos,I/2026,Evaluación,3,La calificación es justa aunque los criterios podrían explicarse con más detalle
+30,Dra. Vargas,Cálculo,I/2026,Evaluación,2,Los exámenes son muy extensos para el tiempo dado y las notas reflejan eso
+31,Prof. Quispe,Programación I,I/2026,Evaluación,5,El sistema de evaluación continua es excelente y motiva al estudio constante
+32,Dr. García,Cálculo,I/2026,Evaluación,4,Los criterios de evaluación son claros y se explican desde el inicio del semestre
+33,Dr. García,Programación I,I/2026,Comunicación,5,Siempre está disponible para resolver dudas fuera del horario de clase
+34,Lic. Mendoza,Cálculo,I/2026,Comunicación,5,Responde rápidamente las consultas y dudas de todos los estudiantes
+35,Ing. Flores,Física General,I/2026,Comunicación,4,Es accesible y amable cuando se le hace alguna consulta fuera de horario
+36,Dra. Vargas,Estadística,I/2026,Comunicación,4,Tiene muy buena comunicación y genera confianza en los estudiantes del curso
+37,Prof. Quispe,Algoritmos,I/2026,Comunicación,5,Se puede contactar fácilmente y siempre atiende las dudas con paciencia
+38,Dr. García,Algoritmos,I/2026,Comunicación,1,Nunca responde los mensajes ni las consultas enviadas fuera de clase
+39,Lic. Mendoza,Estadística,I/2026,Comunicación,2,Es muy difícil contactarlo y no atiende bien las dudas de los estudiantes
+40,Ing. Flores,Cálculo,I/2026,Comunicación,2,El trato con los estudiantes es frío y distante no fomenta la participación
+41,Dra. Vargas,Programación I,I/2026,Comunicación,1,Ignora las preguntas en clase y no atiende bien las dudas de los alumnos
+42,Prof. Quispe,Física General,I/2026,Comunicación,3,Atiende las consultas pero a veces tarda mucho en responder los mensajes
+43,Dr. García,Estadística,I/2026,Comunicación,5,Es muy empático con las dificultades de los estudiantes y siempre ayuda
+44,Lic. Mendoza,Física General,I/2026,Comunicación,4,La comunicación con el docente es muy buena y responde oportunamente
+45,Ing. Flores,Algoritmos,I/2026,Comunicación,3,La comunicación es regular podría ser más accesible para consultas
+46,Dra. Vargas,Cálculo,I/2026,Comunicación,2,No atiende bien las dudas y es poco accesible fuera de la clase
+47,Prof. Quispe,Programación I,I/2026,Comunicación,5,Excelente comunicación con los estudiantes siempre dispuesto a ayudar
+48,Dr. García,Cálculo,I/2026,Comunicación,4,Responde bien las consultas y está atento a las necesidades del grupo
+49,Dr. García,Programación I,I/2026,Puntualidad,5,Siempre llega puntual y respeta el horario establecido para todas las clases
+50,Lic. Mendoza,Cálculo,I/2026,Puntualidad,5,Es muy organizado con el tiempo y nunca ha faltado a ninguna clase
+51,Ing. Flores,Física General,I/2026,Puntualidad,4,Cumple bien con el horario y aprovecha cada minuto de la clase
+52,Dra. Vargas,Estadística,I/2026,Puntualidad,4,Su puntualidad y responsabilidad son muy ejemplares para los estudiantes
+53,Prof. Quispe,Algoritmos,I/2026,Puntualidad,5,Nunca ha faltado ni llegado tarde lo que demuestra su compromiso docente
+54,Dr. García,Algoritmos,I/2026,Puntualidad,1,Llega tarde a la mayoría de las clases a veces con hasta treinta minutos de retraso
+55,Lic. Mendoza,Estadística,I/2026,Puntualidad,2,Ha faltado varias veces sin previo aviso afectando mucho el avance del curso
+56,Ing. Flores,Cálculo,I/2026,Puntualidad,2,No cumple con el horario establecido y desperdicia tiempo valioso de clase
+57,Dra. Vargas,Programación I,I/2026,Puntualidad,1,Sus ausencias frecuentes perjudican el desarrollo del contenido del curso
+58,Prof. Quispe,Física General,I/2026,Puntualidad,3,A veces llega un poco tarde pero en general cumple bastante bien con el horario
+59,Dr. García,Estadística,I/2026,Puntualidad,5,Siempre puntual y preparado para iniciar la clase exactamente a la hora
+60,Lic. Mendoza,Física General,I/2026,Puntualidad,4,La asistencia y puntualidad del docente son muy buenas durante el semestre
+61,Ing. Flores,Algoritmos,I/2026,Puntualidad,3,La asistencia es regular tiene algunas ausencias a lo largo del semestre
+62,Dra. Vargas,Cálculo,I/2026,Puntualidad,2,Llega tarde y a veces sale antes de completar el tiempo completo de clase
+63,Prof. Quispe,Programación I,I/2026,Puntualidad,5,Respeta el tiempo de los estudiantes con su puntualidad ejemplar siempre
+64,Dr. García,Cálculo,I/2026,Puntualidad,4,Muy responsable con su asistencia y cumple con todo el horario planificado
+65,Dr. García,Programación I,I/2026,Material,5,Comparte apuntes y presentaciones muy bien elaboradas y muy bien organizadas
+66,Lic. Mendoza,Cálculo,I/2026,Material,5,El material de estudio que proporciona es de excelente calidad y muy útil
+67,Ing. Flores,Física General,I/2026,Material,4,Las presentaciones son claras y el material complementario resulta muy útil
+68,Dra. Vargas,Estadística,I/2026,Material,4,Sube los recursos digitales a tiempo y son de buena calidad para estudiar
+69,Prof. Quispe,Algoritmos,I/2026,Material,5,Proporciona guías y resúmenes que facilitan mucho el estudio para los exámenes
+70,Dr. García,Algoritmos,I/2026,Material,1,No comparte ningún material ni apuntes de las clases dictadas en el semestre
+71,Lic. Mendoza,Estadística,I/2026,Material,2,Las presentaciones son difíciles de entender y están muy mal organizadas
+72,Ing. Flores,Cálculo,I/2026,Material,2,Faltan ejercicios prácticos para reforzar los temas vistos en clase
+73,Dra. Vargas,Programación I,I/2026,Material,1,El material está desactualizado y es muy insuficiente para preparar los exámenes
+74,Prof. Quispe,Física General,I/2026,Material,3,El material es básico pero cumple con lo mínimo necesario para la materia
+75,Dr. García,Estadística,I/2026,Material,5,Los ejercicios prácticos y recursos digitales que comparte son de alta calidad
+76,Lic. Mendoza,Física General,I/2026,Material,4,Comparte bibliografía actualizada y material complementario muy valioso
+77,Ing. Flores,Algoritmos,I/2026,Material,3,Comparte algunas presentaciones pero faltan más ejercicios de práctica
+78,Dra. Vargas,Cálculo,I/2026,Material,2,No sube el material a tiempo y eso dificulta mucho la preparación para exámenes
+79,Prof. Quispe,Programación I,I/2026,Material,5,El material de apoyo está muy bien estructurado y cubre todo el contenido
+80,Dr. García,Cálculo,I/2026,Material,4,Las presentaciones y apuntes que comparte son claros y muy bien preparados

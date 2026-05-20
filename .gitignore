@@ -74,7 +74,6 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-*.ipynb
 
 # IPython
 profile_default/
@@ -136,10 +135,13 @@ dmypy.json
 # macOS
 .DS_Store
 
-# Datos
-data/raw/*.csv
+# Datos procesados y modelos (no subir archivos grandes)
 data/processed/*.pkl
 data/processed/*.csv
+data/processed/*.model
+data/processed/*.dict
+# El dataset sintético SÍ se sube
+!data/raw/encuesta_sintetica.csv
 
 # Modelos entrenados
 models/

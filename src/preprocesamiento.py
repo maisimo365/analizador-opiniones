@@ -11,15 +11,15 @@ from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 
 # Descargar recursos necesarios (ejecutar una sola vez)
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
-
-try:
-    nltk.data.find('corpora/stopwords')
-except LookupError:
-    nltk.download('stopwords')
+for _resource, _pkg in [
+    ('tokenizers/punkt_tab', 'punkt_tab'),
+    ('tokenizers/punkt', 'punkt'),
+    ('corpora/stopwords', 'stopwords'),
+]:
+    try:
+        nltk.data.find(_resource)
+    except LookupError:
+        nltk.download(_pkg, quiet=True)
 
 
 def limpiar_texto(texto):
