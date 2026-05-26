@@ -16,6 +16,7 @@ from wordcloud import WordCloud
 import pyLDAvis
 import pyLDAvis.gensim_models as gensimvis
 import streamlit.components.v1 as components
+import altair as alt
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -203,30 +204,33 @@ with tab1:
             with g1:
                 st.markdown("**Distribución de Frecuencias: Escala Likert**")
                 labels = {1:"1 - Muy malo", 2:"2 - Malo", 3:"3 - Regular", 4:"4 - Bueno", 5:"5 - Muy bueno"}
-                colors = ["#dc2626", "#ea580c", "#ca8a04", "#16a34a", "#1e40af"]
                 counts = df["calificacion_likert"].value_counts().sort_index()
                 
-                fig, ax = plt.subplots(figsize=(6, 3.5))
-                ax.bar([labels[i] for i in counts.index], counts.values, color=[colors[i-1] for i in counts.index], width=0.55)
-                ax.set_ylabel("Cantidad de Respuestas")
-                ax.spines['top'].set_visible(False)
-                ax.spines['right'].set_visible(False)
-                plt.xticks(fontsize=9)
-                plt.tight_layout()
-                st.pyplot(fig)
-                plt.close()
+                chart_data = pd.DataFrame({
+                    "Escala Likert": [labels[i] for i in counts.index],
+                    "Cantidad": counts.values,
+                    "Color": ["#dc2626", "#ea580c", "#ca8a04", "#16a34a", "#1e40af"]
+                })
+                
+                chart1 = alt.Chart(chart_data).mark_bar().encode(
+                    x=alt.X("Escala Likert", axis=alt.Axis(labelAngle=0)),
+                    y="Cantidad",
+                    color=alt.Color("Color", scale=None),
+                    tooltip=["Escala Likert", "Cantidad"]
+                ).properties(height=350)
+                st.altair_chart(chart1, use_container_width=True)
 
             with g2:
                 st.markdown("**Distribución por Dimensión Evaluada**")
-                fig, ax = plt.subplots(figsize=(6, 3.5))
-                df["dimension"].value_counts().sort_values().plot(kind="barh", ax=ax, color="#475569", width=0.55)
-                ax.set_xlabel("Frecuencia Absoluta")
-                ax.spines['top'].set_visible(False)
-                ax.spines['right'].set_visible(False)
-                plt.xticks(fontsize=9)
-                plt.tight_layout()
-                st.pyplot(fig)
-                plt.close()
+                counts_dim = df["dimension"].value_counts().reset_index()
+                counts_dim.columns = ["Dimensión", "Frecuencia"]
+                
+                chart2 = alt.Chart(counts_dim).mark_bar(color="#475569").encode(
+                    x="Frecuencia",
+                    y=alt.Y("Dimensión", sort="-x"),
+                    tooltip=["Dimensión", "Frecuencia"]
+                ).properties(height=350)
+                st.altair_chart(chart2, use_container_width=True)
 
         st.info("Estructura de datos validada. Continúe a la pestaña de **Preprocesamiento de Texto**.")
 
@@ -322,15 +326,15 @@ with tab2:
 
             top20 = Counter(all_tokens).most_common(20)
             words, freqs = zip(*top20)
-            fig, ax = plt.subplots(figsize=(10, 4.5))
-            ax.barh(list(words)[::-1], list(freqs)[::-1], color="#2563eb", height=0.6)
-            ax.set_title("Frecuencia de Ocurrencia: Top 20 Términos en el Corpus", fontweight="bold", color="#1e3a8a")
-            ax.set_xlabel("Frecuencia Absoluta")
-            ax.spines['top'].set_visible(False)
-            ax.spines['right'].set_visible(False)
-            plt.tight_layout()
-            st.pyplot(fig)
-            plt.close()
+            
+            df_top = pd.DataFrame({"Término": words, "Frecuencia": freqs})
+            
+            chart_top = alt.Chart(df_top).mark_bar(color="#2563eb").encode(
+                x="Frecuencia",
+                y=alt.Y("Término", sort="-x"),
+                tooltip=["Término", "Frecuencia"]
+            ).properties(title="Frecuencia de Ocurrencia: Top 20 Términos", height=400)
+            st.altair_chart(chart_top, use_container_width=True)
 
         elif st.session_state.corpus_tokens is not None:
             st.info("El corpus ya se encuentra procesado y almacenado en la memoria activa de la sesión.")
@@ -494,34 +498,42 @@ with tab4:
     
                 g1, g2 = st.columns(2)
                 with g1:
-                    fig, ax = plt.subplots(figsize=(6, 4))
-                    colores = ["#dc2626" if v < 3 else "#d97706" if v < 4 else "#16a34a" for v in avg.values]
-                    ax.bar([f"Tópico {i}" for i in avg.index], avg.values, color=colores, width=0.5)
-                    ax.axhline(3, color="#64748b", linestyle="--", alpha=0.7, label="Umbral Neutro")
-                    ax.set_ylim(0, 5.5)
-                    ax.set_ylabel("Puntuación Likert Promedio")
-                    ax.spines['top'].set_visible(False)
-                    ax.spines['right'].set_visible(False)
-                    ax.legend(frameon=False)
-                    plt.tight_layout()
-                    st.pyplot(fig)
-                    plt.close()
+                    st.markdown("**Satisfacción Promedio por Tópico**")
+                    df_g1 = pd.DataFrame({
+                        "Tópico": [f"Tópico {i}" for i in avg.index],
+                        "Puntuación": avg.values.round(2),
+                        "Color": ["#dc2626" if v < 3 else "#d97706" if v < 4 else "#16a34a" for v in avg.values]
+                    })
+                    
+                    base1 = alt.Chart(df_g1).encode(
+                        x=alt.X("Tópico", axis=alt.Axis(labelAngle=0)),
+                        y=alt.Y("Puntuación", scale=alt.Scale(domain=[0, 5.5])),
+                        tooltip=["Tópico", "Puntuación"]
+                    )
+                    bar1 = base1.mark_bar(size=40).encode(color=alt.Color("Color", scale=None))
+                    rule1 = alt.Chart(pd.DataFrame({'y': [3]})).mark_rule(color="#64748b", strokeDash=[5, 5]).encode(y='y')
+                    
+                    st.altair_chart((bar1 + rule1).properties(height=350), use_container_width=True)
     
                 with g2:
                     if "docente" in df.columns:
+                        st.markdown("**Satisfacción Promedio por Docente**")
                         avg_doc = df.groupby("docente")["calificacion_likert"].mean().sort_values(ascending=False)
-                        fig, ax = plt.subplots(figsize=(6, 4))
-                        col_d = ["#16a34a" if v >= 4 else "#d97706" if v >= 3 else "#dc2626" for v in avg_doc.values]
-                        ax.bar(avg_doc.index, avg_doc.values, color=col_d, width=0.5)
-                        ax.axhline(3, color="#64748b", linestyle="--", alpha=0.5)
-                        ax.set_ylim(0, 5.5)
-                        ax.set_ylabel("Puntuación Likert Promedio")
-                        ax.spines['top'].set_visible(False)
-                        ax.spines['right'].set_visible(False)
-                        plt.xticks(rotation=15, fontsize=9)
-                        plt.tight_layout()
-                        st.pyplot(fig)
-                        plt.close()
+                        df_g2 = pd.DataFrame({
+                            "Docente": avg_doc.index,
+                            "Puntuación": avg_doc.values.round(2),
+                            "Color": ["#16a34a" if v >= 4 else "#d97706" if v >= 3 else "#dc2626" for v in avg_doc.values]
+                        })
+                        
+                        base2 = alt.Chart(df_g2).encode(
+                            x=alt.X("Docente", sort=None, axis=alt.Axis(labelAngle=-45)),
+                            y=alt.Y("Puntuación", scale=alt.Scale(domain=[0, 5.5])),
+                            tooltip=["Docente", "Puntuación"]
+                        )
+                        bar2 = base2.mark_bar(size=40).encode(color=alt.Color("Color", scale=None))
+                        rule2 = alt.Chart(pd.DataFrame({'y': [3]})).mark_rule(color="#64748b", strokeDash=[5, 5]).encode(y='y')
+                        
+                        st.altair_chart((bar2 + rule2).properties(height=350), use_container_width=True)
     
                 st.markdown("**Resumen de Datos Descriptivos por Componente:**")
                 resumen = df.groupby("topico_dom")["calificacion_likert"].agg(
