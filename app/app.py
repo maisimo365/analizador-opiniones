@@ -27,7 +27,7 @@ from src.visualizacion import grafico_coherencia_vs_topicos
 st.set_page_config(
     page_title="Analizador de Opiniones · UMSS",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 # ── Estilos CSS Formales e Institucionales ───────────────────────────
@@ -102,6 +102,28 @@ for k, v in {
 DATA_PATH = Path(__file__).parent.parent / "data" / "raw" / "encuesta_sintetica.csv"
 if st.session_state.df is None and DATA_PATH.exists():
     st.session_state.df = pd.read_csv(DATA_PATH)
+
+# ── Barra Lateral de Filtros (Sidebar) ───────────────────────────────
+with st.sidebar:
+    st.markdown("### ⚙️ Filtros Globales")
+    st.markdown("<p style='font-size:0.9em; color:#475569;'>Aplica estos filtros para aislar el análisis a un docente o materia específica en la Pestaña 4.</p>", unsafe_allow_html=True)
+    
+    if st.session_state.df is not None:
+        if "docente" in st.session_state.df.columns:
+            docentes_unicos = ["Todos"] + sorted(st.session_state.df["docente"].dropna().unique().tolist())
+            docente_filtro = st.selectbox("👨‍🏫 Docente:", docentes_unicos)
+        else:
+            docente_filtro = "Todos"
+            
+        if "materia" in st.session_state.df.columns:
+            materias_unicas = ["Todas"] + sorted(st.session_state.df["materia"].dropna().unique().tolist())
+            materia_filtro = st.selectbox("📚 Materia:", materias_unicas)
+        else:
+            materia_filtro = "Todas"
+    else:
+        docente_filtro = "Todos"
+        materia_filtro = "Todas"
+        st.info("Cargue un dataset para habilitar.")
 
 # ── Encabezado Principal de la Aplicación ────────────────────────────
 st.markdown("# Analizador Temático de Opiniones Docentes")
@@ -459,60 +481,69 @@ with tab4:
             df["topico_dom"] = [t[0] if t[0] is not None else -1 for t in topicos_doc[:n2]]
             df = df[df["topico_dom"] >= 0]
 
-            avg = df.groupby("topico_dom")["calificacion_likert"].mean()
+            # Aplicar los filtros del Sidebar
+            if docente_filtro != "Todos" and "docente" in df.columns:
+                df = df[df["docente"] == docente_filtro]
+            if materia_filtro != "Todas" and "materia" in df.columns:
+                df = df[df["materia"] == materia_filtro]
 
-            g1, g2 = st.columns(2)
-            with g1:
-                fig, ax = plt.subplots(figsize=(6, 4))
-                colores = ["#dc2626" if v < 3 else "#d97706" if v < 4 else "#16a34a" for v in avg.values]
-                ax.bar([f"Tópico {i}" for i in avg.index], avg.values, color=colores, width=0.5)
-                ax.axhline(3, color="#64748b", linestyle="--", alpha=0.7, label="Umbral Neutro")
-                ax.set_ylim(0, 5.5)
-                ax.set_ylabel("Puntuación Likert Promedio")
-                ax.spines['top'].set_visible(False)
-                ax.spines['right'].set_visible(False)
-                ax.legend(frameon=False)
-                plt.tight_layout()
-                st.pyplot(fig)
-                plt.close()
-
-            with g2:
-                if "docente" in df.columns:
-                    avg_doc = df.groupby("docente")["calificacion_likert"].mean().sort_values(ascending=False)
+            if df.empty:
+                st.warning("⚠️ No hay comentarios que coincidan con los filtros seleccionados. Intenta cambiar los filtros en la barra lateral.")
+            else:
+                avg = df.groupby("topico_dom")["calificacion_likert"].mean()
+    
+                g1, g2 = st.columns(2)
+                with g1:
                     fig, ax = plt.subplots(figsize=(6, 4))
-                    col_d = ["#16a34a" if v >= 4 else "#d97706" if v >= 3 else "#dc2626" for v in avg_doc.values]
-                    ax.bar(avg_doc.index, avg_doc.values, color=col_d, width=0.5)
-                    ax.axhline(3, color="#64748b", linestyle="--", alpha=0.5)
+                    colores = ["#dc2626" if v < 3 else "#d97706" if v < 4 else "#16a34a" for v in avg.values]
+                    ax.bar([f"Tópico {i}" for i in avg.index], avg.values, color=colores, width=0.5)
+                    ax.axhline(3, color="#64748b", linestyle="--", alpha=0.7, label="Umbral Neutro")
                     ax.set_ylim(0, 5.5)
                     ax.set_ylabel("Puntuación Likert Promedio")
                     ax.spines['top'].set_visible(False)
                     ax.spines['right'].set_visible(False)
-                    plt.xticks(rotation=15, fontsize=9)
+                    ax.legend(frameon=False)
                     plt.tight_layout()
                     st.pyplot(fig)
                     plt.close()
-
-            st.markdown("**Resumen de Datos Descriptivos por Componente:**")
-            resumen = df.groupby("topico_dom")["calificacion_likert"].agg(
-                Puntuacion_Media="mean", Volumen_Muestral="count", Desviacion_Estandar="std"
-            ).round(2)
-            resumen.index = [f"Tópico {i}" for i in resumen.index]
-            st.dataframe(resumen, use_container_width=True)
-
-            st.markdown("---")
-            col_down1, col_down2 = st.columns([1, 1])
-            with col_down1:
-                csv_data = df.to_csv(index=False).encode('utf-8')
-                st.download_button(
-                    label=" Descargar Dataset Procesado (CSV)",
-                    data=csv_data,
-                    file_name="encuestas_clasificadas_lda.csv",
-                    mime="text/csv",
-                    use_container_width=True,
-                    type="primary"
-                )
-            with col_down2:
-                st.markdown("<div style='padding-top:10px; color:#475569; font-size:0.85em;'>Exporta los resultados cruzados con los tópicos detectados para análisis en herramientas externas (Excel, PowerBI).</div>", unsafe_allow_html=True)
+    
+                with g2:
+                    if "docente" in df.columns:
+                        avg_doc = df.groupby("docente")["calificacion_likert"].mean().sort_values(ascending=False)
+                        fig, ax = plt.subplots(figsize=(6, 4))
+                        col_d = ["#16a34a" if v >= 4 else "#d97706" if v >= 3 else "#dc2626" for v in avg_doc.values]
+                        ax.bar(avg_doc.index, avg_doc.values, color=col_d, width=0.5)
+                        ax.axhline(3, color="#64748b", linestyle="--", alpha=0.5)
+                        ax.set_ylim(0, 5.5)
+                        ax.set_ylabel("Puntuación Likert Promedio")
+                        ax.spines['top'].set_visible(False)
+                        ax.spines['right'].set_visible(False)
+                        plt.xticks(rotation=15, fontsize=9)
+                        plt.tight_layout()
+                        st.pyplot(fig)
+                        plt.close()
+    
+                st.markdown("**Resumen de Datos Descriptivos por Componente:**")
+                resumen = df.groupby("topico_dom")["calificacion_likert"].agg(
+                    Puntuacion_Media="mean", Volumen_Muestral="count", Desviacion_Estandar="std"
+                ).round(2)
+                resumen.index = [f"Tópico {i}" for i in resumen.index]
+                st.dataframe(resumen, use_container_width=True)
+    
+                st.markdown("---")
+                col_down1, col_down2 = st.columns([1, 1])
+                with col_down1:
+                    csv_data = df.to_csv(index=False).encode('utf-8')
+                    st.download_button(
+                        label=" Descargar Dataset Filtrado (CSV)",
+                        data=csv_data,
+                        file_name="encuestas_clasificadas_lda.csv",
+                        mime="text/csv",
+                        use_container_width=True,
+                        type="primary"
+                    )
+                with col_down2:
+                    st.markdown("<div style='padding-top:10px; color:#475569; font-size:0.85em;'>Exporta los resultados cruzados con los tópicos detectados para análisis en herramientas externas (Excel, PowerBI).</div>", unsafe_allow_html=True)
 
 # ── Pie de Página Institucional ──────────────────────────────────────
 st.divider()
