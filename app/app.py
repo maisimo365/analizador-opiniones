@@ -487,6 +487,21 @@ with tab4:
             resumen.index = [f"Tópico {i}" for i in resumen.index]
             st.dataframe(resumen, use_container_width=True)
 
+            st.markdown("---")
+            col_down1, col_down2 = st.columns([1, 1])
+            with col_down1:
+                csv_data = df.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label=" Descargar Dataset Procesado (CSV)",
+                    data=csv_data,
+                    file_name="encuestas_clasificadas_lda.csv",
+                    mime="text/csv",
+                    use_container_width=True,
+                    type="primary"
+                )
+            with col_down2:
+                st.markdown("<div style='padding-top:10px; color:#475569; font-size:0.85em;'>Exporta los resultados cruzados con los tópicos detectados para análisis en herramientas externas (Excel, PowerBI).</div>", unsafe_allow_html=True)
+
 # ── Pie de Página Institucional ──────────────────────────────────────
 st.divider()
 st.markdown("<p style='text-align:center; color:#64748b; font-size:0.85em;'>Universidad Mayor de San Simón · Facultad de Ciencias y Tecnología<br>Laboratorio de Inteligencia Artificial · Gestión I/2026</p>", unsafe_allow_html=True)
