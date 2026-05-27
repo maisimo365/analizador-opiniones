@@ -94,7 +94,8 @@ st.markdown("""
 for k, v in {
     "df": None, "corpus_tokens": None, "dictionary": None,
     "corpus_gensim": None, "lda_model": None, "topicos_doc": None,
-    "coherencia": None, "num_topics": 5,
+    "coherencia": None, "num_topics": 5, 
+    "filtro_docente": "Todos", "filtro_materia": "Todas"
 }.items():
     if k not in st.session_state:
         st.session_state[k] = v
@@ -110,20 +111,28 @@ with st.sidebar:
     st.markdown("<p style='font-size:0.9em; color:#475569;'>Aplica estos filtros para aislar el análisis a un docente o materia específica en la Pestaña 4.</p>", unsafe_allow_html=True)
     
     if st.session_state.df is not None:
-        if "docente" in st.session_state.df.columns:
-            docentes_unicos = ["Todos"] + sorted(st.session_state.df["docente"].dropna().unique().tolist())
-            docente_filtro = st.selectbox("👨‍🏫 Docente:", docentes_unicos)
-        else:
-            docente_filtro = "Todos"
+        with st.form(key='filtros_form'):
+            if "docente" in st.session_state.df.columns:
+                docentes_unicos = ["Todos"] + sorted(st.session_state.df["docente"].dropna().unique().tolist())
+                # Recuperar el valor actual si es válido
+                doc_idx = docentes_unicos.index(st.session_state.filtro_docente) if st.session_state.filtro_docente in docentes_unicos else 0
+                docente_filtro = st.selectbox("👨‍🏫 Docente:", docentes_unicos, index=doc_idx)
+            else:
+                docente_filtro = "Todos"
+                
+            if "materia" in st.session_state.df.columns:
+                materias_unicas = ["Todas"] + sorted(st.session_state.df["materia"].dropna().unique().tolist())
+                mat_idx = materias_unicas.index(st.session_state.filtro_materia) if st.session_state.filtro_materia in materias_unicas else 0
+                materia_filtro = st.selectbox("📚 Materia:", materias_unicas, index=mat_idx)
+            else:
+                materia_filtro = "Todas"
             
-        if "materia" in st.session_state.df.columns:
-            materias_unicas = ["Todas"] + sorted(st.session_state.df["materia"].dropna().unique().tolist())
-            materia_filtro = st.selectbox("📚 Materia:", materias_unicas)
-        else:
-            materia_filtro = "Todas"
+            submit_button = st.form_submit_button(label='FILTRAR', type='primary', use_container_width=True)
+            if submit_button:
+                st.session_state.filtro_docente = docente_filtro
+                st.session_state.filtro_materia = materia_filtro
+                st.rerun()
     else:
-        docente_filtro = "Todos"
-        materia_filtro = "Todas"
         st.info("Cargue un dataset para habilitar.")
 
 # ── Encabezado Principal de la Aplicación ────────────────────────────
@@ -486,10 +495,10 @@ with tab4:
             df = df[df["topico_dom"] >= 0]
 
             # Aplicar los filtros del Sidebar
-            if docente_filtro != "Todos" and "docente" in df.columns:
-                df = df[df["docente"] == docente_filtro]
-            if materia_filtro != "Todas" and "materia" in df.columns:
-                df = df[df["materia"] == materia_filtro]
+            if st.session_state.filtro_docente != "Todos" and "docente" in df.columns:
+                df = df[df["docente"] == st.session_state.filtro_docente]
+            if st.session_state.filtro_materia != "Todas" and "materia" in df.columns:
+                df = df[df["materia"] == st.session_state.filtro_materia]
 
             if df.empty:
                 st.warning("⚠️ No hay comentarios que coincidan con los filtros seleccionados. Intenta cambiar los filtros en la barra lateral.")
