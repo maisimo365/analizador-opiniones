@@ -1,163 +1,100 @@
-# Analizador de Opiniones de Docentes
+# Analizador de opiniones de estudiantes sobre docentes/materias
 
-Proyecto colaborativo para análisis de opiniones estudiantiles sobre docentes usando modelado de tópicos con LDA (Latent Dirichlet Allocation).
+![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
+![Streamlit](https://img.shields.io/badge/Streamlit-Framework-FF4B4B.svg)
+![NLP](https://img.shields.io/badge/NLP-NLTK%20%7C%20Gensim-brightgreen.svg)
 
-## 📋 Descripción del Proyecto
+Este proyecto propone un sistema que aprovecha la inteligencia artificial para analizar de forma automática textos de respuestas abiertas en encuestas de evaluación docente. Utiliza técnicas de Procesamiento del Lenguaje Natural (PLN) y aprendizaje no supervisado para descubrir los temas que los estudiantes mencionan, adaptándose a lo que realmente les preocupa sin necesidad de definir categorías predefinidas.
 
-Este proyecto implementa un análisis completo de encuestas de opinión estudiantil sobre la calidad docente mediante:
-- Preprocesamiento de texto (tokenización, limpieza, stemming)
-- Vectorización con TF-IDF y Bag of Words
-- Modelado de tópicos con LDA (Latent Dirichlet Allocation)
-- Visualización interactiva de resultados
-- Dashboard interactivo con Streamlit
+## 🎯 Objetivos
 
-## 🛠️ Stack Tecnológico
+### Objetivo General
+Desarrollar un sistema basado en Procesamiento del Lenguaje Natural y aprendizaje no supervisado que analice las respuestas abiertas de encuestas de evaluación docente y descubra automáticamente los temas y subtemas recurrentes en las opiniones de los estudiantes, combinando los resultados con las calificaciones Likert para entregar a los coordinadores académicos una visión integral de la percepción estudiantil.
 
-| Componente | Tecnología |
-|---|---|
-| Lenguaje | Python 3.10+ |
-| Editor | Visual Studio Code |
-| Control de versiones | Git + GitHub |
-| Tokenización | NLTK |
-| Stemming | NLTK SnowballStemmer |
-| Vectorización | scikit-learn |
-| Modelo de tópicos | gensim (LDA) |
-| Evaluación | gensim (CoherenceModel) |
-| Visualización | pyLDAvis, matplotlib, wordcloud |
-| Dashboard | Streamlit |
-| Datos | pandas |
+### Objetivo Específico
+Identificar los temas transversales que los estudiantes expresan libremente, mediante la aplicación de LDA (Latent Dirichlet Allocation) al bloque de preguntas abiertas generales, permitiendo detectar preocupaciones o reconocimientos que escapan a las dimensiones predefinidas.
 
-## 📁 Estructura del Proyecto
+## ⚙️ Funcionamiento y Flujo del Sistema
 
-```
-analizador-opiniones/
-├── README.md                      # Este archivo
-├── requirements.txt               # Dependencias Python
-├── .gitignore                     # Archivos ignorados por Git
-│
-├── data/
-│   ├── raw/                       # Datos originales (CSV de encuesta)
-│   └── processed/                 # Datos preprocesados
-│
-├── notebooks/
-│   ├── 01_exploracion.ipynb       # Análisis exploratorio
-│   ├── 02_preprocesamiento.ipynb  # Limpieza y tokenización
-│   ├── 03_vectorizacion.ipynb     # TF-IDF y Bag of Words
-│   ├── 04_modelo_lda.ipynb        # Entrenamiento LDA
-│   ├── 05_evaluacion.ipynb        # Métricas de coherencia
-│   └── 06_cruce_likert.ipynb      # Análisis con escala Likert
-│
-├── src/
-│   ├── preprocesamiento.py        # Funciones de limpieza reutilizables
-│   ├── vectorizacion.py           # Funciones de vectorización
-│   ├── modelo.py                  # Funciones del modelo LDA
-│   └── visualizacion.py           # Funciones de gráficos
-│
-├── app/
-│   └── app.py                     # Dashboard Streamlit
-│
-└── docs/
-    └── informe.pdf                # Documento final del proyecto
-```
+El prototipo funciona a través de una aplicación web interactiva desarrollada en **Streamlit** y consta de 4 flujos principales:
 
-## 🚀 Instalación
+1. **Paso 1 (Datos):** Una interfaz sencilla para subir los archivos CSV con las encuestas.
+2. **Paso 2 (Preprocesamiento):** Un entorno interactivo donde el texto crudo pasa por un pipeline de NLP (Limpieza, Tokenización, eliminación de Stopwords y Stemming con SnowballStemmer).
+3. **Paso 3 (Modelo LDA):** Panel de control del algoritmo para entrenar el modelo en tiempo real, ajustar manualmente la cantidad de tópicos ($K$) y el número de pasadas, o ejecutar una búsqueda automática para encontrar el valor óptimo.
+4. **Paso 4 (Resultados):** Reporte final que visualiza los hallazgos mediante nubes de palabras, gráficos estadísticos y mapas interactivos, cruzando los temas extraídos por la IA con la calificación original (Likert) del estudiante.
 
-### 1. Clonar el repositorio
-```bash
-git clone https://github.com/usuario/analizador-opiniones-docentes.git
-cd analizador-opiniones-docentes
-```
+## 🛠️ Tecnologías y Herramientas Utilizadas
 
-### 2. Crear entorno virtual (opcional pero recomendado)
-```bash
-python -m venv venv
-# En Windows:
-venv\Scripts\activate
-# En macOS/Linux:
-source venv/bin/activate
-```
+*   **Lenguaje Base:** Python (versión 3.10 o superior).
+*   **Procesamiento de Lenguaje Natural (PLN):** Biblioteca `NLTK` para tokenización y stemming.
+*   **Modelado y Machine Learning:** `Gensim` (LdaModel, CoherenceModel) como motor prioritario. `Scikit-Learn` para vectorización (TfidfVectorizer, CountVectorizer).
+*   **Manipulación de Datos:** `Pandas` y `NumPy`.
+*   **Desarrollo de Interfaz Web:** `Streamlit`.
+*   **Visualización Científica:** 
+    *   `Matplotlib` y `Seaborn` (gráficos estáticos).
+    *   `Altair` (gráficos dinámicos e interactivos).
+    *   `WordCloud` (nubes de palabras).
+    *   `pyLDAvis` (mapa de proyección de dimensionalidad PCA de tópicos latentes).
 
-### 3. Instalar dependencias
-```bash
-pip install -r requirements.txt
-```
+## 🧠 Marco Teórico
 
-### 4. Descargar recursos NLTK
-```python
-import nltk
-nltk.download('punkt')
-nltk.download('stopwords')
-```
+### Procesamiento de Lenguaje Natural (PLN)
+Se aplica un pipeline de preprocesamiento en español:
+*   **Limpieza:** Eliminación de caracteres especiales, URLs, números y signos de puntuación.
+*   **Tokenización:** División del texto en palabras.
+*   **Stopwords:** Eliminación de palabras sin carga semántica (artículos, preposiciones) y palabras de dominio poco informativas ("docente", "materia").
+*   **Stemming:** Uso de `SnowballStemmer` para reducir las palabras a su raíz morfológica común.
+*   **Vectorización:** Representación de palabras en formato numérico usando Bag of Words (BoW) y TF-IDF.
 
-## 📊 Flujo de Trabajo
+### Modelado de Tópicos (LDA)
+El modelado se basa en **Latent Dirichlet Allocation (LDA)**, un modelo probabilístico generativo. El algoritmo agrupa palabras que tienden a aparecer juntas para inferir los tópicos latentes en el conjunto de comentarios.
 
-### Equipo de Datos (2 personas)
-- Diseñan la encuesta
-- Recolectan respuestas
-- Generan CSV limpio en `data/raw/`
+### Calificación Likert como Proxy de Polaridad
+A diferencia del análisis de sentimientos tradicional, este sistema aprovecha la estructura de la encuesta: asocia cada comentario abierto a su calificación cuantitativa en la escala Likert (ej. de 1 a 5), permitiendo identificar si los temas mencionados tienen una connotación positiva o negativa.
 
-### Equipo de Preprocesamiento (2 personas)
-- Limpieza de texto
-- Tokenización y eliminación de stopwords
-- Stemming con Snowball
-- Guardan corpus procesado en `data/processed/`
+## 🚀 Instalación y Ejecución
 
-### Equipo de Modelado LDA (2 personas)
-- Vectorización (TF-IDF/BoW)
-- Entrenamiento del modelo LDA
-- Ajuste de hiperparámetros
-- Evaluación con métricas de coherencia
+Sigue estos pasos para instalar y ejecutar el proyecto en tu máquina local:
 
-### Equipo de Visualización (2 personas)
-- Gráficos con matplotlib
-- Visualización interactiva con pyLDAvis
-- Análisis cruzado con escala Likert
-- Dashboard con Streamlit
+1. **Clonar el repositorio** (o descargar el código fuente):
+   ```bash
+   git clone https://github.com/AndresGGfd/analizador-opiniones.git
+   cd analizador-opiniones
+   ```
 
-## 🔧 Cómo Usar
+2. **Crear y activar un entorno virtual** (recomendado):
+   ```bash
+   # En Windows
+   python -m venv venv
+   .\venv\Scripts\activate
 
-### Ejecutar un notebook
-```bash
-# Los notebooks se abren directamente en VS Code
-# Con la extensión Jupyter puedes correr celdas individuales
-```
+   # En macOS/Linux
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
 
-### Ejecutar el dashboard
-```bash
-streamlit run app/app.py
-```
+3. **Instalar las dependencias**:
+   Asegúrate de estar en la carpeta raíz del proyecto y ejecuta:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## 📝 Flujo de Git
+4. **Ejecutar la aplicación Streamlit**:
+   Una vez instaladas las dependencias, lanza la aplicación web con:
+   ```bash
+   streamlit run app/app.py
+   ```
+   *Esto abrirá automáticamente una pestaña en tu navegador web por defecto (generalmente en `http://localhost:8501`).*
 
-**Rama principal:** `main` (nunca editar directamente)
+## 👥 Equipo (Grupo 15)
+*   Huayllani López Lisandro Antonio
+*   Vela Uribe William
+*   Zeballos Romero Jhoel Andres
+*   Massi Geronimo Miguel Angel
+*   Lizarazu Ferrufino Melina
+*   Pérez Navia René Andrés
+*   Ayra Torrico Gonzalo
+*   Ayala Claros Cristian
 
-**Para cada tarea:**
-```bash
-git checkout main
-git pull origin main
-git checkout -b feature/descripcion-tarea
-
-# Hacer cambios...
-
-git add .
-git commit -m "Descripción clara del cambio"
-git push origin feature/descripcion-tarea
-```
-
-Luego abrir Pull Request en GitHub para revisión.
-
-## 👥 Equipo
-
-andress mi señor
-
-## 📚 Referencias
-
-- [NLTK Documentation](https://www.nltk.org/)
-- [scikit-learn](https://scikit-learn.org/)
-- [Gensim LDA](https://radimrehurek.com/gensim/)
-- [pyLDAvis](https://pyldavis.readthedocs.io/)
-- [Streamlit](https://streamlit.io/)
-
-## 📄 Licencia
-
-Proyecto educativo del grupo (2026)
+*Universidad Mayor de San Simón - Facultad de Ciencias y Tecnología*
+*Materia: Inteligencia Artificial*
