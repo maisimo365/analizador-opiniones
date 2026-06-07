@@ -188,7 +188,40 @@ with tab1:
     with col_up:
         f = st.file_uploader("Cargar archivo CSV personalizado", type="csv", label_visibility="collapsed")
         if f:
-            st.session_state.df = pd.read_csv(f)
+            try:
+                raw = pd.read_csv(f, encoding="utf-8")
+            except UnicodeDecodeError:
+                f.seek(0)
+                raw = pd.read_csv(f, encoding="latin-1")
+
+            # Normalizar columnas exportadas desde Google Forms
+            COLUMN_MAP = {
+                "Nombre del Docente": "docente",
+                "Materia": "materia",
+                "Semestre": "semestre",
+                "Dimensión a evaluar": "dimension",
+                "Dimension a evaluar": "dimension",
+                "DimensiÃ³n a evaluar": "dimension",
+                "Calificación de la dimensión": "calificacion_likert",
+                "CalificaciÃ³n de la dimensiÃ³n": "calificacion_likert",
+                "Calificacion de la dimension": "calificacion_likert",
+                "Comentario u opinión": "comentario",
+                "Comentario u opiniÃ³n": "comentario",
+                "Comentario u opinion": "comentario",
+                "Marca temporal": "marca_temporal",
+            }
+            raw = raw.rename(columns=COLUMN_MAP)
+
+            # Asegurar columna comentario; rellenar vacíos con cadena vacía
+            if "comentario" not in raw.columns:
+                raw["comentario"] = ""
+            raw["comentario"] = raw["comentario"].fillna("").astype(str)
+
+            # Convertir calificacion_likert a numérico
+            if "calificacion_likert" in raw.columns:
+                raw["calificacion_likert"] = pd.to_numeric(raw["calificacion_likert"], errors="coerce")
+
+            st.session_state.df = raw
             st.session_state.corpus_tokens = None
             st.session_state.lda_model = None
 
@@ -318,6 +351,9 @@ with tab2:
             with st.spinner("Procesando matriz textual de datos..."):
                 corpus = []
                 for texto in textos:
+                    if not texto.strip() or texto.lower() in ("nan", "none", ""):
+                        corpus.append([])
+                        continue
                     tokens = procesar_documento(texto, eliminar_stop=eliminar_stop, aplicar_stem=aplicar_stem)
                     tokens = [t for t in tokens if len(t) >= min_len]
                     corpus.append(tokens)
