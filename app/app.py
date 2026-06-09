@@ -94,8 +94,9 @@ st.markdown("""
 for k, v in {
     "df": None, "corpus_tokens": None, "dictionary": None,
     "corpus_gensim": None, "lda_model": None, "topicos_doc": None,
-    "coherencia": None, "num_topics": 5, 
-    "filtro_docente": "Todos", "filtro_materia": "Todas"
+    "coherencia": None, "num_topics": 5,
+    "filtro_docente": "Todos", "filtro_materia": "Todas",
+    "ultimo_file_id": None,
 }.items():
     if k not in st.session_state:
         st.session_state[k] = v
@@ -187,10 +188,41 @@ with tab1:
             st.session_state.lda_model = None
     with col_up:
         f = st.file_uploader("Cargar archivo CSV personalizado", type="csv", label_visibility="collapsed")
-        if f:
-            st.session_state.df = pd.read_csv(f)
+        if f and f.file_id != st.session_state.ultimo_file_id:
+            try:
+                raw = pd.read_csv(f, encoding="utf-8")
+            except UnicodeDecodeError:
+                f.seek(0)
+                raw = pd.read_csv(f, encoding="latin-1")
+
+            COLUMN_MAP = {
+                "Nombre del Docente": "docente",
+                "Materia": "materia",
+                "Semestre": "semestre",
+                "Dimensión a evaluar": "dimension",
+                "Dimension a evaluar": "dimension",
+                "DimensiÃ³n a evaluar": "dimension",
+                "Calificación de la dimensión": "calificacion_likert",
+                "CalificaciÃ³n de la dimensiÃ³n": "calificacion_likert",
+                "Calificacion de la dimension": "calificacion_likert",
+                "Comentario u opinión": "comentario",
+                "Comentario u opiniÃ³n": "comentario",
+                "Comentario u opinion": "comentario",
+                "Marca temporal": "marca_temporal",
+            }
+            raw = raw.rename(columns=COLUMN_MAP)
+
+            if "comentario" not in raw.columns:
+                raw["comentario"] = ""
+            raw["comentario"] = raw["comentario"].fillna("").astype(str)
+
+            if "calificacion_likert" in raw.columns:
+                raw["calificacion_likert"] = pd.to_numeric(raw["calificacion_likert"], errors="coerce")
+
+            st.session_state.df = raw
             st.session_state.corpus_tokens = None
             st.session_state.lda_model = None
+            st.session_state.ultimo_file_id = f.file_id
 
     if st.session_state.df is not None:
         df = st.session_state.df
@@ -318,6 +350,9 @@ with tab2:
             with st.spinner("Procesando matriz textual de datos..."):
                 corpus = []
                 for texto in textos:
+                    if not texto.strip() or texto.lower() in ("nan", "none", ""):
+                        corpus.append([])
+                        continue
                     tokens = procesar_documento(texto, eliminar_stop=eliminar_stop, aplicar_stem=aplicar_stem)
                     tokens = [t for t in tokens if len(t) >= min_len]
                     corpus.append(tokens)
@@ -566,6 +601,3 @@ with tab4:
                 with col_down2:
                     st.markdown("<div style='padding-top:10px; color:#475569; font-size:0.85em;'>Exporta los resultados cruzados con los tópicos detectados para análisis en herramientas externas (Excel, PowerBI).</div>", unsafe_allow_html=True)
 
-# ── Pie de Página Institucional ──────────────────────────────────────
-st.divider()
-st.markdown("<p style='text-align:center; color:#64748b; font-size:0.85em;'>Universidad Mayor de San Simón · Facultad de Ciencias y Tecnología<br>Laboratorio de Inteligencia Artificial · Gestión I/2026</p>", unsafe_allow_html=True)
